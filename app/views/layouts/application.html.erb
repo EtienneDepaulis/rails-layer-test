@@ -3,7 +3,7 @@
 <head>
   <title>RailsLayerTest</title>
   <%= stylesheet_link_tag    'application', media: 'all' %>
-  <%= javascript_include_tag 'application' %>
+
   <%= csrf_meta_tags %>
 </head>
 <body>
@@ -25,7 +25,7 @@
 
         <ul class="nav navbar-nav">
           <% User.all.each do |user| %>
-            <li><a href="#"><%= user %></a></li>
+            <li><%= link_to user, root_path(user_id: user.id) %></li>
           <% end %>
         </ul>
 
@@ -36,6 +36,17 @@
   <div class="container">
     <%= yield %>
   </div><!-- /.container -->
+
+  <script type="text/javascript">
+    window.appId = '<%= ENV["LAYER_APP_ID"] %>';
+    window.identityProvider = '';
+
+    <% if user_signed_in? %>
+    window.userIdMain = <%= current_user.id %>;
+    <% end %>
+  </script>
+
+  <%= javascript_include_tag 'application' %>
 
 </body>
 </html>
