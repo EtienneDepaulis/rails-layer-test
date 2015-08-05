@@ -4,8 +4,10 @@ class User < ActiveRecord::Base
     name
   end
 
-  def identity_token
-    "#{id}-secret-identity-token"
+  def generate_identity_token(nonce)
+    layer = Layer::Api::Client.new
+
+    layer.generate_identity_token(user_id: id, nonce: nonce)
   end
 
 end

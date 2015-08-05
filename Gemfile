@@ -20,8 +20,9 @@ end
 gem 'foreman'
 gem 'puma'
 
-gem 'sdoc', '~> 0.4.0', group: :doc
+gem 'layer-api'
 
+gem 'sdoc', '~> 0.4.0', group: :doc
 
 group :development, :test do
   gem 'byebug'

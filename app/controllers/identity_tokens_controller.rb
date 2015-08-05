@@ -1,7 +1,7 @@
-class UsersController < ApplicationController
+class IdentityTokensController < ApplicationController
 
   def create
-    render json: {identity_token: current_user.identity_token }
+    render json: {identity_token: current_user.generate_identity_token(identity_token_params[:nonce]) }
   end
 
   private
