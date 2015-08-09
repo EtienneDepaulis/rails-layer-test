@@ -6,6 +6,8 @@ class ApplicationController < ActionController::Base
   helper_method :current_user
   helper_method :user_signed_in?
 
+  before_action :authenticate_user!
+
   private
 
     def current_user
@@ -14,5 +16,12 @@ class ApplicationController < ActionController::Base
 
     def user_signed_in?
       current_user
+    end
+
+    def authenticate_user!
+      unless user_signed_in?
+        self.response_body = nil
+        redirect_to not_signed_in_url
+      end
     end
 end

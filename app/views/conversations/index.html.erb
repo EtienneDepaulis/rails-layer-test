@@ -1,0 +1,48 @@
+<ul class="nav nav-pills">
+  <% @conversations.each do |conversation| %>
+    <li role="presentation"><a href="#" class="conversation_selector" data-conversation-url="<%= conversation.layer_url %>"><%= conversation.name %></a></li>
+  <% end %>
+</ul>
+
+<div class="panel panel-primary">
+
+  <div class="panel-heading">
+    <span class="glyphicon glyphicon-comment"></span> Chat
+  </div>
+
+  <div class="panel-body">
+    <ul id="chat" class="chat">
+
+    </ul>
+  </div>
+
+  <div class="panel-footer">
+    <div class="input-group">
+
+        <input id="btn-input" type="text" class="form-control input-sm" placeholder="Type your message here...">
+        <span class="input-group-btn">
+          <button class="btn btn-warning btn-sm" id="btn-chat">Send</button>
+        </span>
+
+    </div>
+  </div>
+</div>
+
+
+<script id="message-template" type="text/x-handlebars-template">
+  <li class="left clearfix">
+    <span class="chat-img pull-left">
+      <img src="http://placehold.it/50/55C1E7/fff&amp;text={{sender_id}}" alt="User Avatar" class="img-circle">
+    </span>
+    <div class="chat-body clearfix">
+      <div class="header">
+        <strong class="primary-font">Etienne</strong>
+        <small class="pull-right text-muted">
+          <span class="glyphicon glyphicon-time"></span>
+          {{received_at}}
+        </small>
+      </div>
+      <p>{{message_body}}</p>
+    </div>
+  </li>
+</script>

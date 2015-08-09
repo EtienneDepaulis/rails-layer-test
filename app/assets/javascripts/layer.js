@@ -14,15 +14,7 @@
             "Content-type": "application/json"
         },
         cache: {
-            conversationList: [],
-            sampleConversation: null,
-            sampleMessage1: null,
-            sampleMessage2: null,
-            sampleContent1: null,
-            sampleContent2: null
-        },
-        testData: {
-            longText: new Array(5).join("Hello World")
+            sampleConversationUrl: null
         }
     };
 
@@ -134,6 +126,34 @@
                 }
             })
         });
+    }
+
+    function enable_conversation_selectors() {
+      $("a.conversation_selector").bind("click", function(e) {
+        e.preventDefault();
+
+        $("ul#chat").html("");
+
+        layersample.cache.sampleConversationUrl = $(this).data("conversation-url");
+
+        getMessages(layersample.cache.sampleConversationUrl)
+
+        .then(function(messages) {
+          var source   = $("#message-template").html();
+          var template = Handlebars.compile(source);
+
+          $.each( messages, function( index, message ){
+            console.log(message);
+            var context = {message_body: message.parts[0].body, received_at: moment(message.received_at).fromNow(), sender_id: message.sender.user_id};
+            var html = template(context);
+
+            $("ul#chat").append(html);
+          });
+
+          console.log("Messages loaded");
+        });
+
+      })
     }
 
 
@@ -356,49 +376,32 @@
     .then(function(sessionToken) {
       layersample.headers.Authorization =
               'Layer session-token="' + sessionToken + '"';
-
-      // Now we can do stuff, like get a list of conversations
-      return getConversations();
-    })
-
-    // getConversations() returns a list of conversations
-    .then(function(conversations) {
-      layersample.cache.conversationList = conversations;
-
-      console.log("Selected conversation", conversations[conversations.length-1].url);
-
-      layersample.cache.sampleConversation = conversations[conversations.length-1];
-      // Now lets create a conversation
-      return getMessages(layersample.cache.sampleConversation.url);
-    })
-
-    // getMessages returns an array of messages; in this case,
-    // an array of one message that is identical to sampleMessage1.
-    .then(function(messages) {
-
-      $.each( messages, function( index, message ){
-        message_html = $("<li>").html(message.parts[0].body);
-        $("ul#chat").append(message_html);
-      });
-
-      console.log("Messages loaded");
+      // createConversation(["eee"]).then(function(conversation){
+        // console.log(conversation);
+      })
+      enable_conversation_selectors();
     });
 
-    $("#btn-chat").bind("click", function(e){
+     $("#btn-chat").bind("click", function(e){
       e.preventDefault();
       var message_body = $("#btn-input").val();
+
+      var source   = $("#message-template").html();
+      var template = Handlebars.compile(source);
 
       sendMessage( layersample.cache.sampleConversation.url, message_body, "text/plain")
 
       .then(function(message) {
         console.log("Message added");
-        $("#btn-input").val("");
-        message_html = $("<li>").html(message.parts[0].body);
 
-        $("ul#chat").append(message_html);
+        var context = {message_body: message.parts[0].body, received_at: moment(message.received_at).fromNow(), sender_id: message.sender.user_id};
+        var html = template(context);
+
+        $("ul#chat").append(html);
 
       });
 
     });
+
 
 })();
